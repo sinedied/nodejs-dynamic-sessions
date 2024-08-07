@@ -30,6 +30,8 @@
   ```bash
   POOL_MANAGEMENT_ENDPOINT=
   ```
+1. Go to Azure Portal, find the created sessions pool, and open the `Access Control (IAM)` tab.
+1. Add a new role assignment to your account: `Azure ContainerApps Session Executor`
 
 ### Run the app
 
