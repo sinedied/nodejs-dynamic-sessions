@@ -1,4 +1,4 @@
-# Azure Container Apps Dynamic Sessions with Node.js Pool test
+# ACA Dynamic Sessions with Node.js Playground
 
 ## Prerequisites
 - [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli)
