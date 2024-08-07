@@ -34,10 +34,12 @@ export class SessionService {
   }
 
   async runCode(code: string): Promise<RunOutput> {
-    return this.fetchJson(`${api}/sessions/${this.sessionId()}`, {
+    const result = this.fetchJson(`${api}/sessions/${this.sessionId()}`, {
       method: 'POST',
       body: JSON.stringify({ code }),
     });
+    await this.listFiles();
+    return result;
   }
 
   async npmInstall(packageName: string): Promise<RunOutput> {
