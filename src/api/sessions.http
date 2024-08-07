@@ -2,20 +2,22 @@
 # VS Code with REST Client extension is needed to use this file.
 # Download at: https://aka.ms/vscode/rest-client
 ##################################################################
+# To get the bearer token, run the following command in Azure CLI:
+#   az account get-access-token --query accessToken
 
-@resourceGroup = "_test"
-@sessionPoolName = "node-sessions-test"
-@subscriptionId = ""
-@bearerToken = ""
+@resourceGroup = {{$dotenv RESOURCE_GROUP}}
+@subscriptionId = {{$dotenv SUBSCRIPTION_ID}}
+@sessionPoolName = {{$dotenv SESSION_POOL_NAME}}
+@bearerToken = {{$dotenv BEARER_TOKEN}}
 
 ### Create session pool
-POST https://management.azure.com/subscriptions/{{subscriptionId}}/resourceGroups/{{resourceGroup}}/providers/Microsoft.App/sessionPools/{{sessionPoolName}}?api-version=2024-02-02-preview
+PUT https://management.azure.com/subscriptions/{{subscriptionId}}/resourceGroups/{{resourceGroup}}/providers/Microsoft.App/sessionPools/{{sessionPoolName}}?api-version=2024-02-02-preview
 Content-Type: application/json
 Authorization: Bearer {{bearerToken}}
 
 {
     "location": "northcentralusstage",
-    "name": "stacyzeng-node-testpool",
+    "name": "{{sessionPoolName}}",
     "properties": {
         "poolManagementType": "Dynamic",
         "containerType": "NodeLTS",
