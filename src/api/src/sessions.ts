@@ -84,7 +84,7 @@ export class SessionsNode {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error ${response.status} (${await response.text()})`);
     }
 
     const { properties } = (await response.json()) as any;
@@ -109,7 +109,7 @@ export class SessionsNode {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error ${response.status} (${await response.text()})`);
     }
 
     const json = (await response.json()) as any;
@@ -127,7 +127,7 @@ export class SessionsNode {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error ${response.status} (${await response.text()})`);
     }
 
     return await response.blob();
@@ -144,7 +144,7 @@ export class SessionsNode {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error ${response.status} (${await response.text()})`);
     }
 
     const json = (await response.json()) as any;
