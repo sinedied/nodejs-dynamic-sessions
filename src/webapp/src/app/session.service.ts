@@ -38,6 +38,13 @@ export class SessionService {
     });
   }
 
+  async npmInstall(packageName: string): Promise<RunOutput> {
+    return this.fetchJson(`${api}/sessions/${this.sessionId()}`, {
+      method: 'POST',
+      body: JSON.stringify({ code: `require("child_process").execSync("npm install --no-save ${packageName}").toString()` }),
+    });
+  }
+
   async uploadFile(name: string, data: Blob): Promise<RemoteFile> {
     return this.fetchJson(`${api}/sessions/${this.sessionId()}/files`, {
       method: 'POST',

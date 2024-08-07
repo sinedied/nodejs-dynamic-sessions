@@ -19,12 +19,19 @@ import { RunOutput, SessionService } from './session.service';
         <pre>{{ stringify(result() ?? {}) }}</pre>
       }
       <hr>
-      <p>
+      <p class="button">
         <button (click)="runCode()" [disabled]="!session.sessionId() || wait()">Run code</button>
+        <input type="text" [ngModel]="packageName()" (ngModelChange)="packageName.set($event)" placeholder="Package name">
+        <button (click)="npmInstall()" [disabled]="!session.sessionId() || wait()">Install package</button>
       </p>
     </fieldset>
   `,
-  styles: ``
+  styles: `
+    input {
+      margin-left: 2em;
+      margin-right: .5em;
+    }
+  `
 })
 export class EditorComponent {
   editorOptions = { theme: 'vs-dark', language: 'javascript' };
@@ -32,10 +39,18 @@ export class EditorComponent {
   session = inject(SessionService);
   result = signal<RunOutput | undefined>(undefined);
   wait = signal<boolean>(false);
+  packageName = signal<string>('');
 
   async runCode() {
     this.wait.set(true);
     const result = await this.session.runCode(this.code());
+    this.result.set(result);
+    this.wait.set(false);
+  }
+
+  async npmInstall() {
+    this.wait.set(true);
+    const result = await this.session.npmInstall(this.packageName());
     this.result.set(result);
     this.wait.set(false);
   }
