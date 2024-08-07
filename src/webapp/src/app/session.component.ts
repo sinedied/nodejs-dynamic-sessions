@@ -75,6 +75,9 @@ export class SessionComponent {
   }
 
   async newSession(sessionId?: string) {
+    if (!sessionId) {
+      this.session.sessionId.set('');
+    }
     this.wait.set(true);
     await this.session.initSession(sessionId);
     this.updateUrl();
