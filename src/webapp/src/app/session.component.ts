@@ -1,19 +1,25 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SessionService } from './session.service';
+import { LoaderComponent } from './loader.component';
 
 @Component({
   selector: 'app-session',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LoaderComponent],
   template: `
     <fieldset>
       <legend>Session</legend>
       <p>Current session ID: {{ session.sessionId() }}</p>
-      <p>
-        <button (click)="newSession()" [disabled]="wait()">New session</button>
-      </p>
-      @if (session.files().length) {
+      @if (wait()) {
+        <app-loader></app-loader>
+      }
+      @else {
+        <p>
+          <button (click)="newSession()" [disabled]="wait()">New session</button>
+        </p>
+      }
+      @if (session.files().length && !wait()) {
         <hr>
         <table>
           <thead>
@@ -46,9 +52,25 @@ export class SessionComponent {
   session = inject(SessionService);
   wait = signal<boolean>(false);
 
-  async newSession() {
+  ngOnInit() {
+    // Get the session ID from the URL query parameter
+    const url = new URL(location.href);
+    const sessionId = url.searchParams.get('session') ?? undefined;
+    this.newSession(sessionId);
+  }
+
+  async newSession(sessionId?: string) {
     this.wait.set(true);
-    const sessionId = await this.session.createNewSession();
+    await this.session.initSession(sessionId);
+    this.updateUrl();
     this.wait.set(false);
+  }
+
+  private updateUrl() {
+    // Update the URL with the current session ID as  a query parameter
+    const sessionId = this.session.sessionId();
+    const url = new URL(location.href);
+    url.searchParams.set('session', sessionId);
+    history.replaceState(null, '', url.toString());
   }
 }

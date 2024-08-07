@@ -22,13 +22,14 @@ export class SessionService {
   sessionId = signal<string>('');
   files = signal<RemoteFile[]>([]);
 
-  async createNewSession(): Promise<string> {
-    const sessionId = uuidv4();
+  async initSession(sessionId?: string): Promise<string> {
+    sessionId ??= uuidv4();
     await this.fetchJson(`${api}/sessions/${sessionId}`, {
       method: 'POST',
       body: JSON.stringify({ code: 'true' }),
     });
     this.sessionId.set(sessionId);
+    await this.listFiles();
     return sessionId;
   }
 
