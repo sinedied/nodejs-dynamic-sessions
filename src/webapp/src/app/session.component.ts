@@ -34,7 +34,7 @@ import { EditorService } from './editor.service';
             <tr *ngFor="let file of session.files()">
               <td>{{ file.filename }}</td>
               <td>{{ file.size }}</td>
-              <td>{{ file.last_modified_time }}</td>
+              <td>{{ shortDate(file.lastModifiedTime) }}</td>
               <td>
                 <button (click)="loadFile(file.filename)">Load in editor</button>
                 <button (click)="downloadFile(file.filename)">Download</button>
@@ -106,6 +106,10 @@ export class SessionComponent {
     await this.session.deleteFile(filename);
     await this.session.listFiles();
     this.wait.set(false);
+  }
+
+  shortDate(date: string) {
+    return new Date(date).toLocaleDateString();
   }
 
   private updateUrl() {

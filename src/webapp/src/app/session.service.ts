@@ -6,7 +6,7 @@ export interface RemoteFile {
   $id: string;
   filename: string;
   size: number;
-  last_modified_time: string;
+  lastModifiedTime: string;
 }
 
 export interface RunOutput {
