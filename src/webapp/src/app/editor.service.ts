@@ -6,7 +6,7 @@ import { RunOutput } from './session.service';
 })
 export class EditorService {
   editorOptions = { theme: 'vs-dark', language: 'javascript' };
-  code = signal<string>('console.log("Hello world!");');
+  code = signal<string>('require("fs").writeFileSync("/mnt/data/test", "hello");\n\nconsole.log("Hello world!");');
   result = signal<RunOutput | undefined>(undefined);
   packageName = signal<string>('');
   filename = signal<string>('');
