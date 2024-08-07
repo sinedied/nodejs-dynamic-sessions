@@ -37,7 +37,7 @@ import { EditorService } from './editor.service';
               <td>{{ file.last_modified_time }}</td>
               <td>
                 <button (click)="loadFile(file.filename)">Load in editor</button>
-                <!-- <button>Download</button> -->
+                <button (click)="downloadFile(file.filename)">Download</button>
                 <button (click)="deleteFile(file.filename)">Delete</button>
               </td>
             </tr>
@@ -60,7 +60,7 @@ import { EditorService } from './editor.service';
       text-align: left;
     }
     button + button {
-      margin-left: .5em;
+      margin-left: 0.5em;
     }
   `,
 })
@@ -89,10 +89,16 @@ export class SessionComponent {
 
   async loadFile(filename: string) {
     this.editor.disabled.set(true);
-    const content = await this.session.downloadFile(filename);
+    const content = await this.session.downloadTextFile(filename);
     this.editor.code.set(content);
     this.editor.filename.set(filename);
     this.editor.disabled.set(false);
+  }
+
+  async downloadFile(filename: string) {
+    this.wait.set(true);
+    await this.session.downloadFile(filename);
+    this.wait.set(false);
   }
 
   async deleteFile(filename: string) {

@@ -16,7 +16,7 @@ export interface RunOutput {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SessionService {
   sessionId = signal<string>('');
@@ -45,7 +45,9 @@ export class SessionService {
   async npmInstall(packageName: string): Promise<RunOutput> {
     return this.fetchJson(`${api}/sessions/${this.sessionId()}`, {
       method: 'POST',
-      body: JSON.stringify({ code: `require("child_process").execSync("npm install --no-save ${packageName}").toString()` }),
+      body: JSON.stringify({
+        code: `require("child_process").execSync("npm install --no-save ${packageName}").toString()`,
+      }),
     });
   }
 
@@ -64,12 +66,27 @@ export class SessionService {
     return file;
   }
 
-  async downloadFile(name: string): Promise<string> {
+  async downloadTextFile(name: string): Promise<string> {
     const result = await fetch(`${api}/sessions/${this.sessionId()}/files/${name}`);
     if (!result.ok) {
       throw new Error(`Failed to call API: ${result.statusText}`);
     }
     return result.text();
+  }
+
+  async downloadFile(name: string): Promise<void> {
+    const result = await fetch(`${api}/sessions/${this.sessionId()}/files/${name}`);
+    if (!result.ok) {
+      throw new Error(`Failed to call API: ${result.statusText}`);
+    }
+    // Make the browser download the file
+    const blob = await result.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   async listFiles(): Promise<RemoteFile[]> {
@@ -95,7 +112,7 @@ export class SessionService {
 }
 
 function uuidv4() {
-  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
-    (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
+  return '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, (c) =>
+    (+c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))).toString(16),
   );
 }
