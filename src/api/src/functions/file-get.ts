@@ -4,7 +4,7 @@ import { SessionsNode } from '../sessions';
 async function getFile(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   const { sessionId, filename } = request.params;
 
-  context.log(`Listing files in session ${sessionId}`);
+  context.log(`Getting file "${filename}" in session ${sessionId}`);
 
   try {
     const session = new SessionsNode({ sessionId });
