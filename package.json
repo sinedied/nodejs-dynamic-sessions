@@ -2,7 +2,6 @@
   "name": "nodejs-dynamic-sessions",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "type": "module",
   "scripts": {
     "start": "concurrently \"npm:start:*\" --kill-others",
@@ -14,8 +13,7 @@
     "clean": "npm run clean --workspaces --if-present",
     "lint": "xo",
     "lint:fix": "xo --fix",
-    "format": "prettier --list-different --write .",
-    "prepare": "simple-git-hooks || echo 'simple-git-hooks install skipped'"
+    "format": "prettier --list-different --write ."
   },
   "keywords": [],
   "author": "",
@@ -25,19 +23,14 @@
   ],
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "lint-staged": "^15.2.2",
     "prettier": "^3.0.3",
     "rimraf": "^6.0.1",
-    "simple-git-hooks": "^2.9.0",
     "typescript": "^5.3.3",
     "xo": "^0.59.3"
   },
   "engines": {
     "node": ">=20",
     "npm": ">=10"
-  },
-  "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
   },
   "xo": {
     "space": true,

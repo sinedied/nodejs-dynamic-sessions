@@ -22,7 +22,8 @@
     "vscode": {
       "extensions": [
         "ms-azuretools.azure-dev",
-        "ms-azuretools.vscode-bicep"
+        "ms-azuretools.vscode-bicep",
+        "angular.ng-template",
       ]
     }
   },
