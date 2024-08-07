@@ -74,6 +74,13 @@ export class SessionService {
     return files;
   }
 
+  async deleteFile(name: string): Promise<void> {
+    return this.fetchJson(`${api}/sessions/${this.sessionId()}`, {
+      method: 'POST',
+      body: JSON.stringify({ code: `require("fs").unlinkSync(${name}")` }),
+    });
+  }
+
   private async fetchJson(url: string, options?: RequestInit) {
     const result = await fetch(url, options);
     if (!result.ok) {

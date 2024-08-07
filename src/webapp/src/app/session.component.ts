@@ -38,7 +38,7 @@ import { EditorService } from './editor.service';
               <td>
                 <button (click)="loadFile(file.filename)">Load in editor</button>
                 <!-- <button>Download</button> -->
-                <!-- <button>Delete</button> -->
+                <button (click)="deleteFile(file.filename)">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -58,6 +58,9 @@ import { EditorService } from './editor.service';
     th {
       background-color: #f0f0f0;
       text-align: left;
+    }
+    button + button {
+      margin-left: .5em;
     }
   `,
 })
@@ -90,6 +93,13 @@ export class SessionComponent {
     this.editor.code.set(content);
     this.editor.filename.set(filename);
     this.editor.disabled.set(false);
+  }
+
+  async deleteFile(filename: string) {
+    this.wait.set(true);
+    await this.session.deleteFile(filename);
+    await this.session.listFiles();
+    this.wait.set(false);
   }
 
   private updateUrl() {
