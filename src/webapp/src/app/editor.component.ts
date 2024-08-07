@@ -27,15 +27,8 @@ import { EditorService } from './editor.service';
         <pre>{{ stringify(editor.result() ?? {}) }}</pre>
       }
       <hr />
-      <p class="button">
+      <p>
         <button (click)="runCode()" [disabled]="!session.sessionId() || editor.wait()">Run code</button>
-        <input
-          type="text"
-          [ngModel]="editor.packageName()"
-          (ngModelChange)="editor.packageName.set($event)"
-          placeholder="Package name"
-        />
-        <button (click)="npmInstall()" [disabled]="!session.sessionId() || editor.wait()">Install package</button>
         <input
           type="text"
           [ngModel]="editor.filename()"
@@ -44,12 +37,29 @@ import { EditorService } from './editor.service';
         />
         <button (click)="saveFile()" [disabled]="!session.sessionId() || editor.wait()">Save file</button>
       </p>
+      <hr />
+      <p>
+        <button (click)="listPackages()" [disabled]="!session.sessionId() || editor.wait()">List packages</button>
+        <input
+          type="text"
+          [ngModel]="editor.packageName()"
+          (ngModelChange)="editor.packageName.set($event)"
+          placeholder="Package name"
+        />
+        <button (click)="npmInstall()" [disabled]="!session.sessionId() || editor.wait()">Install package</button>
+      </p>
     </fieldset>
   `,
   styles: `
     input {
       margin-left: 2em;
       margin-right: 0.5em;
+    }
+    button + button {
+      margin-left: 2em;
+    }
+    pre {
+      white-space: pre-wrap;
     }
   `,
 })
@@ -67,6 +77,13 @@ export class EditorComponent {
   async npmInstall() {
     this.editor.wait.set(true);
     const result = await this.session.npmInstall(this.editor.packageName());
+    this.editor.result.set(result);
+    this.editor.wait.set(false);
+  }
+
+  async listPackages() {
+    this.editor.wait.set(true);
+    const result = await this.session.listNpmPackages();
     this.editor.result.set(result);
     this.editor.wait.set(false);
   }

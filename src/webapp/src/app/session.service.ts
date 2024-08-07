@@ -49,6 +49,10 @@ export class SessionService {
     });
   }
 
+  async listNpmPackages(): Promise<RunOutput> {
+    return this.runCode(`require("child_process").spawnSync("npm", ["list"], { encoding: "utf-8" })`);
+  }
+
   async uploadFile(name: string, data: Blob): Promise<RemoteFile> {
     const formData = new FormData();
     formData.append('file', data, name);
