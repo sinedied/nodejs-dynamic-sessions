@@ -23,6 +23,8 @@ import { RunOutput, SessionService } from './session.service';
         <button (click)="runCode()" [disabled]="!session.sessionId() || wait()">Run code</button>
         <input type="text" [ngModel]="packageName()" (ngModelChange)="packageName.set($event)" placeholder="Package name">
         <button (click)="npmInstall()" [disabled]="!session.sessionId() || wait()">Install package</button>
+        <input type="text" [ngModel]="filename()" (ngModelChange)="filename.set($event)" placeholder="File name">
+        <button (click)="saveFile()" [disabled]="!session.sessionId() || wait()">Save file</button>
       </p>
     </fieldset>
   `,
@@ -40,6 +42,7 @@ export class EditorComponent {
   result = signal<RunOutput | undefined>(undefined);
   wait = signal<boolean>(false);
   packageName = signal<string>('');
+  filename = signal<string>('');
 
   async runCode() {
     this.wait.set(true);
@@ -52,6 +55,12 @@ export class EditorComponent {
     this.wait.set(true);
     const result = await this.session.npmInstall(this.packageName());
     this.result.set(result);
+    this.wait.set(false);
+  }
+
+  async saveFile() {
+    this.wait.set(true);
+    await this.session.uploadFile(this.filename(), new Blob([this.code()], { type: 'text/plain' }));
     this.wait.set(false);
   }
 

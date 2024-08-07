@@ -1,10 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { SessionService } from './session.service';
 
 @Component({
   selector: 'app-session',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   template: `
     <fieldset>
       <legend>Session</legend>
@@ -12,6 +13,31 @@ import { SessionService } from './session.service';
       <p>
         <button (click)="newSession()" [disabled]="wait()">New session</button>
       </p>
+      @if (session.files().length) {
+        <hr>
+        <table>
+          <thead>
+            <tr>
+              <th>Filename</th>
+              <th>Size</th>
+              <th>Last modified</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let file of session.files()">
+              <td>{{ file.filename }}</td>
+              <td>{{ file.size }}</td>
+              <td>{{ file.last_modified_time }}</td>
+              <td>
+                <!-- <button>Load in editor</button> -->
+                <!-- <button>Download</button> -->
+                <!-- <button>Delete</button> -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      }
     </fieldset>
   `,
   styles: ``

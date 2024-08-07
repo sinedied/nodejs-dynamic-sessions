@@ -20,6 +20,7 @@ export interface RunOutput {
 })
 export class SessionService {
   sessionId = signal<string>('');
+  files = signal<RemoteFile[]>([]);
 
   async createNewSession(): Promise<string> {
     const sessionId = uuidv4();
@@ -46,10 +47,14 @@ export class SessionService {
   }
 
   async uploadFile(name: string, data: Blob): Promise<RemoteFile> {
-    return this.fetchJson(`${api}/sessions/${this.sessionId()}/files`, {
+    const formData = new FormData();
+    formData.append('file', data, name);
+    const file = await this.fetchJson(`${api}/sessions/${this.sessionId()}/files`, {
       method: 'POST',
-      body: JSON.stringify({ name, data }),
+      body: formData,
     });
+    this.files.set([...this.files(), file]);
+    return file;
   }
 
   async downloadFile(name: string): Promise<string> {
@@ -61,7 +66,9 @@ export class SessionService {
   }
 
   async listFiles(): Promise<RemoteFile[]> {
-    return this.fetchJson(`${api}/sessions/${this.sessionId()}/files`);
+    const files = await this.fetchJson(`${api}/sessions/${this.sessionId()}/files`);
+    this.files.set(files);
+    return files;
   }
 
   private async fetchJson(url: string, options?: RequestInit) {
