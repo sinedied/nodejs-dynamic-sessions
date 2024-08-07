@@ -10,7 +10,7 @@ async function getFile(request: HttpRequest, context: InvocationContext): Promis
     const session = new SessionsNode({ sessionId });
     const result = await session.downloadFile(filename);
 
-    return { jsonBody: result };
+    return { body: result };
   } catch (_error: unknown) {
     const error = _error as Error;
     context.error(`Error when processing file-get request: ${error.message}`);
