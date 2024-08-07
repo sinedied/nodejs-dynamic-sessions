@@ -12,6 +12,11 @@ import { SessionComponent } from './session.component';
     <br />
     <app-editor></app-editor>
   `,
-  styles: ``,
+  styles: `
+    :host {
+      display: block;
+      margin: 20px;
+    }
+  `,
 })
 export class AppComponent {}
