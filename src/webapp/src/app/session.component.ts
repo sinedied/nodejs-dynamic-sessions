@@ -6,12 +6,13 @@ import { SessionService } from './session.service';
   standalone: true,
   imports: [],
   template: `
-    <section>
+    <fieldset>
+      <legend>Session</legend>
       <p>Current session ID: {{ session.sessionId() }}</p>
       <p>
         <button (click)="newSession()" [disabled]="wait()">New session</button>
       </p>
-    </section>
+    </fieldset>
   `,
   styles: ``
 })
