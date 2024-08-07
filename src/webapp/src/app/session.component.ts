@@ -17,6 +17,8 @@ import { EditorService } from './editor.service';
       } @else {
         <p>
           <button (click)="newSession()" [disabled]="wait()">New session</button>
+          <input type="file" (change)="file.set($event)" />
+          <button (click)="uploadFile()" [disabled]="wait()">Upload file</button>
         </p>
       }
       @if (session.files().length && !wait()) {
@@ -59,6 +61,10 @@ import { EditorService } from './editor.service';
       background-color: #f0f0f0;
       text-align: left;
     }
+    input {
+      margin-left: 2em;
+      margin-right: 0.5em;
+    }
     button + button {
       margin-left: 0.5em;
     }
@@ -69,6 +75,7 @@ export class SessionComponent {
   editor = inject(EditorService);
   wait = signal<boolean>(false);
   load = output<string>();
+  file = signal<any | undefined>(undefined);
 
   ngOnInit() {
     // Get the session ID from the URL query parameter
@@ -84,6 +91,13 @@ export class SessionComponent {
     this.wait.set(true);
     await this.session.initSession(sessionId);
     this.updateUrl();
+    this.wait.set(false);
+  }
+
+  async uploadFile() {
+    this.wait.set(true);
+    const file = this.file()?.target.files?.[0];
+    await this.session.uploadFile(file.name, file);
     this.wait.set(false);
   }
 
