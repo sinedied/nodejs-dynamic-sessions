@@ -46,7 +46,19 @@ import { LoaderComponent } from './loader.component';
       }
     </fieldset>
   `,
-  styles: ``
+  styles: `
+    table {
+      width: 100%;
+      border-spacing: 1;
+    }
+    th, td {
+      padding: .5em;
+    }
+    th {
+      background-color: #f0f0f0;
+      text-align: left;
+    }
+  `
 })
 export class SessionComponent {
   session = inject(SessionService);
