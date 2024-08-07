@@ -1,0 +1,44 @@
+##################################################################
+# VS Code with REST Client extension is needed to use this file.
+# Download at: https://aka.ms/vscode/rest-client
+##################################################################
+
+@resourceGroup = "_test"
+@sessionPoolName = "node-sessions-test"
+@subscriptionId = ""
+@bearerToken = ""
+
+### Create session pool
+POST https://management.azure.com/subscriptions/{{subscriptionId}}/resourceGroups/{{resourceGroup}}/providers/Microsoft.App/sessionPools/{{sessionPoolName}}?api-version=2024-02-02-preview
+Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
+
+{
+    "location": "northcentralusstage",
+    "name": "stacyzeng-node-testpool",
+    "properties": {
+        "poolManagementType": "Dynamic",
+        "containerType": "NodeLTS",
+        "scaleConfiguration": {
+            "maxConcurrentSessions": 10,
+            "readySessionInstances": 1
+        },
+        "dynamicPoolConfiguration": {
+            "executionType": "Timed",
+            "cooldownPeriodInSeconds": 310
+        },
+        "sessionNetworkConfiguration": {
+            "Status": "EgressEnabled"
+        }
+    }
+}
+
+### Get session pool
+GET https://management.azure.com/subscriptions/{{subscriptionId}}/resourceGroups/{{resourceGroup}}/providers/Microsoft.App/sessionPools/{{sessionPoolName}}?api-version=2024-02-02-preview
+Content-Type: application/json
+Authorization: Bearer {{bearerToken}}
+
+### Delete session pool
+DELETE https://management.azure.com/subscriptions/{{subscriptionId}}/resourceGroups/{{resourceGroup}}/providers/Microsoft.App/sessionPools/{{sessionPoolName}}?api-version=2024-02-02-preview
+Content-Type: application/json
+Authorization: Bearer {{bearerToken}}

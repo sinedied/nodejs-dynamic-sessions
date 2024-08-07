@@ -1,24 +1,36 @@
-import process from 'node:process';
-import fs from 'node:fs/promises';
-import { join } from 'node:path';
 import { HttpRequest, HttpResponseInit, InvocationContext, app } from '@azure/functions';
-import 'dotenv/config';
-import { getCredentials } from '../security.js';
+import { SessionsNode } from '../sessions';
+
+export interface SessionsRequest {
+  code: string;
+}
 
 async function postSessions(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-  const storageUrl = process.env.AZURE_STORAGE_URL;
-  const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME;
-  const { fileName } = request.params;
+  const { sessionId } = await request.params;
+  const { code } = (await request.json()) as SessionsRequest;
 
-  return {
-    jsonBody: {
-      message: 'Hello from the API',
-    }
+  context.log(`Running code in session ${sessionId ?? '[new]'}`);
+
+  try {
+    const session = new SessionsNode({ sessionId });
+    const output = await session.runCode(code);
+
+    return {
+      jsonBody: { sessionId: session.sessionId, ...output },
+    };
+  } catch (_error: unknown) {
+    const error = _error as Error;
+    context.error(`Error when processing files-get request: ${error.message}`);
+
+    return {
+      status: 500,
+      jsonBody: { error: 'Service temporarily unavailable. Please try again later.' },
+    };
   }
 }
 
 app.http('sessions-post', {
-  route: 'sessions',
+  route: 'sessions/{sessionId?}',
   methods: ['POST'],
   authLevel: 'anonymous',
   handler: postSessions,

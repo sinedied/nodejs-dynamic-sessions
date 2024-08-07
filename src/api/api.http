@@ -5,9 +5,31 @@
 
 @api_host = http://localhost:7071
 
+### Create session
+# @name session
 POST {{api_host}}/api/sessions
 Accept: */*
 Content-Type: application/json
 
 {
+  "code": "'hello'"
 }
+
+### Upload file
+@sessionId = {{session.response.body.sessionId}}
+POST {{api_host}}/api/sessions/{{sessionId}}/files
+Accept: */*
+Content-Type: multipart/form-data; boundary=Boundary
+
+--Boundary
+Content-Disposition: form-data; name="file"; filename="hello.js"
+Content-Type: application/javascript
+
+console.log('Hello, world!');
+--Boundary--
+
+### List files
+GET {{api_host}}/api/sessions/{{sessionId}}/files
+
+### Get file
+GET {{api_host}}/api/sessions/{{sessionId}}/files/hello.js
